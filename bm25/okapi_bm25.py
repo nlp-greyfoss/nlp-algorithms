@@ -59,7 +59,7 @@ class OkapiBM25:
         for word in query:
             if word in self.idx:
                 for doc_id in self.idx[word].keys():
-                    scores[doc_id] += self.get_score(word, doc_id, len(self.idx[word]))
+                    scores[doc_id] += self.get_score(word, doc_id, self.idx.get_doc_frequency(word))
 
         return scores
 

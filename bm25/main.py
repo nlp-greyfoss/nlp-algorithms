@@ -10,7 +10,7 @@ def main():
 
     bm25 = OkapiBM25(corpus, tokenize=jieba.lcut)
 
-    query = "怀孕吃什么"
+    query = "医生，我肛门处非常痒怎么办"
 
     result = bm25.get_top_k(query, corpus=corpus, k=5)
 
