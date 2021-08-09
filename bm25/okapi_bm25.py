@@ -36,7 +36,7 @@ class OkapiBM25:
         :param doc_freq: number of docs word occurs in
         :return:
         '''
-        tf = self.idx[word][doc_id]
+        tf = math.log10(self.idx[word][doc_id] + 1)
 
         if not tf:
             return 0

@@ -35,7 +35,7 @@ class UnitTest(unittest.TestCase):
         corpus = [
             "你好 你 叫 什么",
             "你 的 名字 是 什么",
-            "你 今天 吃了 没"
+            "你 今天 吃了 什么"
         ]
 
         bm25 = OkapiBM25(corpus, tokenize=lambda x: x.split())
