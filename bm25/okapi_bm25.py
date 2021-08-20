@@ -3,7 +3,7 @@ import math
 
 from bm25.doc_len import DocLen
 from bm25.inverted_index import InvertedIndex
-
+import re
 
 class OkapiBM25:
     def __init__(self, corpus, k=1.2, b=.75, tokenize=None):
@@ -17,6 +17,7 @@ class OkapiBM25:
             corpus = [tokenize(doc) for doc in corpus]
 
         self.idx, self.dl = self.build_struct(corpus)
+
 
     @staticmethod
     def build_struct(corpus):
