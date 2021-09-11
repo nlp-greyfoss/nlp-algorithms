@@ -20,6 +20,8 @@ class SublayerConnection(nn.Module):
 
     def forward(self, x, sublayer):
         '''
+        :param x:子层的输入
+        :param sublayer: 子层
         应用残差连接到任何同样大小的子层
         '''
         return x + self.dropout(sublayer(self.norm(x)))
