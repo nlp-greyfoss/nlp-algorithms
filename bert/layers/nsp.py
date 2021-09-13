@@ -3,7 +3,7 @@ import torch.nn as nn
 
 class NextSentencePrediction(nn.Module):
     '''
-    下一句预测：is_next或is_not_next
+    下一句预测：is_next或not_next
     '''
 
     def __init__(self, d_model):
