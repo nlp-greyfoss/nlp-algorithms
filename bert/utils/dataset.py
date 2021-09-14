@@ -1,8 +1,7 @@
-from torch.utils.data import Dataset
+import random
 
 import tqdm
-import torch
-import random
+from torch.utils.data import Dataset
 
 
 class BertDataset(Dataset):
