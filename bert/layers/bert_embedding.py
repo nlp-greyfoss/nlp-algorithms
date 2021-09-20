@@ -1,35 +1,29 @@
 import torch
 import torch.nn as nn
 
+from bert.layers.layer_norm import BertLayerNorm
 from transformer.layers.layer_norm import LayerNorm
 
 
-class BertEmbedding(nn.Module):
+class BertEmbeddings(nn.Module):
     '''
     BERT的嵌入由三个嵌入层组成：
-    1. 标记嵌入层(TokenEmbedding)
+    1. 标记嵌入层(WordEmbedding)
     2. 位置嵌入层(PositionalEmbedding)
-    3. 片段嵌入层(SegmentEmbedding)
+    3. 片段嵌入层(TokenTypeEmbedding)
     BERT输入中的每个单词分别输入到三个嵌入层中，得到三个嵌入向量表示，然后这三个表示加起来就是BERT的输入嵌入。
     这三个层都是通过学习得来的。
     '''
 
-    def __init__(self, vocab_size, d_embed, type_vocab_size, max_position_embeddings, dropout=0.1):
-        '''
+    def __init__(self, config):
+        super(BertEmbeddings, self).__init__()
 
-        :param vocab_size: 词表大小
-        :param d_embed: 嵌入层大小
-        :param type_vocab_size: 类型词表大小
-        :param max_position_embeddings: 最大输入长度
-        :param dropout: dropout比率，通常为0.1
-        '''
+        self.word_embeddings = nn.Embedding(config.vocab_size, config.hidden_size)
+        self.position_embeddings = nn.Embedding(config.max_position_embeddings, config.hidden_size)
+        self.token_type_embeddings = nn.Embedding(config.type_vocab_size, config.hidden_size)
 
-        self.token_embedding = nn.Embedding(vocab_size, d_embed)
-        self.position_embedding = nn.Embedding(max_position_embeddings, d_embed)
-        self.segment_embedding = nn.Embedding(type_vocab_size, d_embed)
-
-        self.layer_norm = LayerNorm(d_embed)
-        self.dropout = nn.Dropout(dropout)
+        self.layer_norm = BertLayerNorm(config.hidden_size)
+        self.dropout = nn.Dropout(config.hidden_dropout_prob)
 
     def forward(self, input_ids, token_type_ids=None):
         '''
@@ -46,11 +40,13 @@ class BertEmbedding(nn.Module):
         if token_type_ids is None:
             token_type_ids = torch.zeros_like(input_ids)
 
-        token_embeddings = self.token_embedding(input_ids)
-        position_embeddings = self.position_embedding(position_ids)
-        segment_embeddings = self.segment_embedding(token_type_ids)
+        word_embeddings = self.word_embeddings(input_ids)
+        position_embeddings = self.position_embeddings(position_ids)
+        token_type_embeddings = self.token_type_embeddings(token_type_ids)
 
-        embeddings = token_embeddings + position_embeddings + segment_embeddings
+        embeddings = word_embeddings + position_embeddings + token_type_embeddings
         embeddings = self.layer_norm(embeddings)
         embeddings = self.dropout(embeddings)
         return embeddings
+
+    
